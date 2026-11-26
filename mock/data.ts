@@ -50,21 +50,79 @@ export const contents: MockContent[] = Array.from({ length: 50 }, (_, i) => {
 
 export const menusByRole: Record<string, unknown[]> = {
     admin: [
-        { path: '/dashboard', title: '工作台', icon: 'HomeFilled' },
-        { path: '/content', title: '内容管理', icon: 'Document' },
-        { path: '/audit', title: '审核中心', icon: 'Checked' },
-        { path: '/system/users', title: '用户管理', icon: 'User' },
-        { path: '/system/roles', title: '角色权限', icon: 'Lock' },
+        { index: '1', path: '/workbench', title: '工作台', icon: 'HomeFilled' },
+        {
+            index: '2',
+            title: '内容运营',
+            icon: 'Histogram',
+            children: [
+                {
+                    index: '3',
+                    title: '内容管理',
+                    icon: 'Comment',
+                    path: '/contain/management'
+                },
+                {
+                    index: '4',
+                    title: '审核管理',
+                    icon: 'QuestionFilled',
+                    path: '/contain/audit'
+                }
+            ]
+        },
+        {
+            index: '5',
+            title: '系统管理',
+            icon: 'Tools',
+            children: [
+                {
+                    index: '6',
+                    title: '用户管理',
+                    icon: 'Avatar',
+                    path: '/user/management'
+                },
+                {
+                    index: '7',
+                    title: '角色管理',
+                    icon: 'Avatar',
+                    path: '/user/role'
+                }
+            ]
+        }
     ],
     operator: [
-        { path: '/dashboard', title: '工作台', icon: 'HomeFilled' },
-        { path: '/content', title: '内容管理', icon: 'Document' },
+        { index: '8', path: '/workbench', title: '工作台', icon: 'HomeFilled' },
+        {
+            index: '9',
+            title: '内容运营',
+            icon: 'Histogram',
+            children: [
+                {
+                    index: '10',
+                    title: '内容管理',
+                    icon: 'Comment',
+                    path: '/contain/management'
+                }
+            ]
+        },
     ],
     auditor: [
-        { path: '/dashboard', title: '工作台', icon: 'HomeFilled' },
-        { path: '/audit', title: '审核中心', icon: 'Checked' },
+        { index: '11', path: '/workbench', title: '工作台', icon: 'HomeFilled' },
+        {
+            index: '12',
+            title: '内容运营',
+            icon: 'Histogram',
+            children: [
+                {
+                    index: '13',
+                    title: '审核管理',
+                    icon: 'QuestionFilled',
+                    path: '/contain/audit'
+                }
+            ]
+        },
     ],
     guest: [
-        { path: '/dashboard', title: '工作台', icon: 'HomeFilled' },
-    ],
+        { index: '14', path: '/workbench', title: '工作台', icon: 'HomeFilled' }
+    ]
 }

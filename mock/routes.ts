@@ -59,7 +59,7 @@ export const mockRoutes: MockRoute[] = [
         method: 'GET',
         path: '/api/auth/menus',
         handler: ({ query }) => {
-            const role = query.role ?? 'operator'
+            const role = query.role ?? 'guest'
             return menusByRole[role] ?? []
         },
     },

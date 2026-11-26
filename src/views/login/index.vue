@@ -43,11 +43,15 @@ import { ElMessage } from 'element-plus'
 import type { FormInstance, FormRules } from 'element-plus'
 import type { LoginResult, LoginParams } from '@/api/user/index.ts'
 import type { ApiResult } from '@/types/http.ts'
+import { useUserStore } from '@/stores/modules/user.ts'
+import { useRouter } from 'vue-router'
 
 defineOptions({
   name: 'Login'
 })
 
+const router = useRouter()
+const userS = useUserStore()
 const ruleFormRef = ref<FormInstance>()
 const ruleForm = reactive<LoginParams>({
   userName: '',
@@ -74,12 +78,14 @@ const submitForm = () => {
     }
     const res: ApiResult<LoginResult> = await login(ruleForm)
     if(res['code'] === REQUEST_CODE.success) {
-      // 跳转
+      const token = res?.['data']?.token
+      localStorage.setItem('token', token)
+      userS.setUser(res?.['data']?.profile)
+      router.push('/')
       ElMessage.success('登录成功')
     } else {
       ElMessage.error(res['message'])
     }
-    console.log(res)
   })
 }
 const resetForm = () => {

@@ -10,7 +10,7 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
-docs
+docs/需求文档.md
 *.local
 
 # Editor directories and files

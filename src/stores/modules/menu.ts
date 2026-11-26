@@ -1,71 +1,32 @@
 import { defineStore } from 'pinia'
 import type {MenuItemProp, tabsProp} from '@/types/menuItem.ts'
-import {reactive} from 'vue'
+import {ref} from 'vue'
+import { useUserStore } from '@/stores/modules/user.ts'
+import { menus } from '@/api/user/index.ts'
+import {REQUEST_CODE} from "@/constants/request.ts";
 
 export const menuStore = defineStore('menu', () => {
-    const menuArr: MenuItemProp[] = [
-        {
-            index: '1',
-            title: '工作台',
-            icon: 'HomeFilled',
-            path: '/workbench'
-        },
-        {
-            index: '2',
-            title: '内容运营',
-            icon: 'Histogram',
-            children: [
-                {
-                    index: '2-1',
-                    title: '内容管理',
-                    icon: 'Comment',
-                    path: '/contain/management'
-                },
-                {
-                    index: '2-2',
-                    title: '动态表单',
-                    icon: 'Tools',
-                    path: '/contain/myForm'
-                },
-                {
-                    index: '2-3',
-                    title: '审核管理',
-                    icon: 'QuestionFilled',
-                    path: '/contain/audit'
-                }
-            ]
-        },
-        {
-            index: '3',
-            title: '系统管理',
-            icon: 'Tools',
-            children: [
-                {
-                    index: '3-1',
-                    title: '用户管理',
-                    icon: 'Avatar',
-                    path: '/user/management'
-                },
-                {
-                    index: '3-2',
-                    title: '角色管理',
-                    icon: 'Avatar',
-                    path: '/user/role'
-                }
-            ]
-        }
-    ]
+    const userStore = useUserStore()
+    const menuArr = ref<MenuItemProp[]>([])
 
-    const tabsArr= reactive<tabsProp[]>([])
+    const tabsArr= ref<tabsProp[]>([])
+
+    const getMenu = async () => {
+        console.log(userStore.user, '---')
+        const res = await menus(userStore.user || { role: 'guest' })
+        if(res['code'] === REQUEST_CODE.success) {
+            menuArr.value = res['data'] || []
+        }
+    }
 
     const addTabs = (object: tabsProp) => {
-        const index = tabsArr.findIndex(item => {
+        const index = tabsArr.value.findIndex(item => {
             return item['name'] === object['name']
         })
         if(index === -1) {
-            tabsArr.push(object)
+            tabsArr.value.push(object)
         } else {
-            tabsArr[index] = {
+            tabsArr.value[index] = {
                 ...object
             }
         }
@@ -74,30 +35,36 @@ export const menuStore = defineStore('menu', () => {
     }
 
     const deleteTab = (object: tabsProp) => {
-        const index = tabsArr.findIndex(item => {
+        const index = tabsArr.value.findIndex(item => {
             return item['name'] === object['name']
         })
         if(index !== -1) {
-            const isCheck = tabsArr[index]['isCheck'] === true
-            tabsArr.splice(index, 1)
-            if(isCheck && tabsArr.length > 0) {
+            const isCheck = tabsArr.value[index]['isCheck'] === true
+            tabsArr.value.splice(index, 1)
+            if(isCheck && tabsArr.value.length > 0) {
                 // 选中最后一个
-                setTabCheck(tabsArr[tabsArr.length - 1])
+                setTabCheck(tabsArr.value[tabsArr.value.length - 1])
             }
         }
     }
 
     const setTabCheck = (object: tabsProp) => {
-        tabsArr.forEach(item => {
+        tabsArr.value.forEach(item => {
             item['isCheck'] = item['name'] === object['name']
         })
     }
 
+    const clearTab = () => {
+        tabsArr.value = []
+    }
+
     return {
         menuArr,
+        getMenu,
         tabsArr,
         addTabs,
         deleteTab,
-        setTabCheck
+        setTabCheck,
+        clearTab
     }
 })

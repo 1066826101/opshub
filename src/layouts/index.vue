@@ -27,7 +27,7 @@
 import ViewHead from './components/viewHead.vue'
 import Menu from './components/menu.vue'
 import ViewFoot from './components/viewFoot.vue'
-import {computed, ref, watch} from 'vue'
+import {computed, onMounted, ref} from 'vue'
 import { MENU_MIN_WIDTH, MENU_MAX_WIDTH } from '@/constants/layout.ts'
 import { menuStore } from '@/stores/modules/menu.ts'
 import { useRoute }from 'vue-router'
@@ -52,23 +52,29 @@ const resizeEnd = (size: number) => {
   localStorage.setItem('menuWidth', size.toString())
 }
 
-watch(
-    () => route.fullPath,
-    () => {
-      const menu = findMenu(menuS.menuArr, route.path)
-      if(!menu) {
-        return
-      }
-      menuS.addTabs({
-        ...menu,
-        name: String(menu['index']),
-        route: {
-          ...route
-        }
-      })
-    },
-    { immediate: true }
-)
+onMounted(() => {
+  // 获取菜单
+  getMenu()
+})
+
+const getMenu = async () => {
+  await menuS.getMenu()
+  setTabs()
+}
+
+const setTabs = async () => {
+  const menu = findMenu(menuS.menuArr, route.path)
+  if(!menu) {
+    return
+  }
+  menuS.addTabs({
+    ...menu,
+    name: String(menu['index']),
+    route: {
+      ...route
+    }
+  })
+}
 </script>
 
 <style scoped>

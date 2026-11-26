@@ -20,7 +20,8 @@
 
 <script setup lang="ts">
 import type { MenuItemProp } from '@/types/menuItem.ts'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
+import {menuStore} from "@/stores/modules/menu.ts";
 defineOptions({
   name: 'MenuItem'
 })
@@ -30,9 +31,17 @@ defineProps<{
 }>()
 
 const router = useRouter()
-
+const route = useRoute()
+const menuS = menuStore()
 const menuClick = (menu: MenuItemProp) => {
   router.push(menu['path'] || '')
+  menuS.addTabs({
+    ...menu,
+    name: String(menu['index']),
+    route: {
+      ...route
+    }
+  })
 }
 
 </script>
